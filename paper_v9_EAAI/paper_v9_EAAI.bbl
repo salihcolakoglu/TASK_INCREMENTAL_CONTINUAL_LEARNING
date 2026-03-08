@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{30}
 \expandafter\ifx\csname url\endcsname\relax
   \def\url#1{\texttt{#1}}\fi
 \expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
@@ -105,5 +105,73 @@ Z.~Li, D.~Hoiem, Learning without forgetting, IEEE Transactions on Pattern
 \bibitem{olmez2021walsh}
 T.~Olmez, Z.~Dokur, Strengthening the training of convolutional neural networks
   by using {Walsh} matrix, arXiv preprint arXiv:2104.00035 (2021).
+
+\bibitem{dallepezze2025multilabel}
+D.~Dalle~Pezze, D.~Deronjic, C.~Masiero, D.~Tosato, A.~Beghi, G.~A.~Susto,
+  A multi-label continual learning framework to scale deep learning approaches
+  for packaging equipment monitoring, Engineering Applications of Artificial
+  Intelligence 155 (2025) 111150.
+
+\bibitem{chen2025surface}
+R.~Chen, Z.~Li, Z.~Zhao, A novel method for surface defect inspection:
+  Unsupervised continual learning for gradually varying domains, Engineering
+  Applications of Artificial Intelligence 155 (2025) 111150.
+
+\bibitem{chen2023online}
+X.~Chen, J.~Jiang, Z.~Li, H.~Qi, Q.~Li, J.~Liu, L.~Zheng, M.~Liu, Y.~Deng,
+  An online continual object detector on {VHR} remote sensing images with class
+  imbalance, Engineering Applications of Artificial Intelligence 117 (2023)
+  105549.
+
+\bibitem{yan2025compact}
+S.~Yan, H.~Shao, X.~Wang, H.~Zhang, Y.~Xiao, B.~Liu, Compact-sparse
+  prototype calibration network for few-shot continual fault diagnosis of
+  rotating machinery, Engineering Applications of Artificial Intelligence 155
+  (2025) 111099.
+
+\bibitem{fanan2025driver}
+M.~Fanan, D.~Dalle~Pezze, E.~Efatinasab, R.~Carli, M.~Rampazzo, G.~A.~Susto,
+  Continual learning for behavior-based driver identification, Engineering
+  Applications of Artificial Intelligence 150 (2025) 110459.
+
+\bibitem{groteramm2023regression}
+W.~Grote-Ramm, D.~Lanuschny, F.~Lorenzen, M.~Oliveira~Brito, F.~Sch\"{o}nig,
+  Continual learning for neural regression networks to cope with concept drift
+  in industrial processes using convex optimisation, Engineering Applications of
+  Artificial Intelligence 120 (2023) 105927.
+
+\bibitem{lin2025diffusion}
+T.~Lin, L.~Song, L.~Cui, H.~Wang, Continual learning for unknown domain fault
+  diagnosis in rotating machinery via {Diffusion-Integrated} {Dynamic} {Mixture}
+  {Experts}, Engineering Applications of Artificial Intelligence 156 (2025)
+  111056.
+
+\bibitem{zhang2024federated}
+Z.~Zhang, Y.~Zhang, H.~Li, S.~Liu, W.~Chen, Z.~Zhang, L.~Tang, Federated
+  continual representation learning for evolutionary distributed intrusion
+  detection in {Industrial} {Internet} of {Things}, Engineering Applications of
+  Artificial Intelligence 135 (2024) 108826.
+
+\bibitem{han2022online}
+Y.~Han, J.~Liu, Online continual learning via the meta-learning update with
+  multi-scale knowledge distillation and data augmentation, arXiv preprint
+  arXiv:2209.06107 (2022).
+
+\bibitem{garcia2025tabular}
+P.~Garc{\'\i}a-Santaclara, B.~Fern\'{a}ndez-Castro, R.~P.~D{\'\i}az-Redondo,
+  Overcoming catastrophic forgetting in tabular data classification: A
+  pseudorehearsal-based approach, Engineering Applications of Artificial
+  Intelligence 156 (2025) 110908.
+
+\bibitem{ding2024selfdriven}
+A.~Ding, X.~Yi, Y.~Qin, B.~Wang, Self-driven continual learning for
+  class-added motor fault diagnosis based on unseen fault detector and
+  propensity distillation, Engineering Applications of Artificial Intelligence
+  127 (2024) 107382.
+
+\bibitem{liu2024emitter}
+J.~Liu, J.~Wang, H.~Huang, J.~Li, Specific emitter identification unaffected
+  by time through adversarial domain adaptation and continual learning,
+  Engineering Applications of Artificial Intelligence 138 (2024) 109324.
 
 \end{thebibliography}

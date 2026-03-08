@@ -65,9 +65,9 @@ Continual learning \sep Task-incremental learning \sep Catastrophic forgetting \
 
 \section{Introduction}
 
-Deep neural networks excel at learning from large-scale datasets but suffer from \textit{catastrophic forgetting}~\cite{mccloskey1989catastrophic,french1999catastrophic} when sequentially learning multiple tasks. When trained on a new task, standard neural networks dramatically degrade performance on previously learned tasks, limiting their applicability to real-world continual learning scenarios such as lifelong robotics~\cite{lesort2020continual}, personalized recommendations, and adaptive assistants.
+Deep neural networks excel at learning from large-scale datasets but suffer from \textit{catastrophic forgetting}~\cite{mccloskey1989catastrophic,french1999catastrophic} when sequentially learning multiple tasks. When trained on a new task, standard neural networks dramatically degrade performance on previously learned tasks, limiting their applicability to real-world continual learning scenarios such as lifelong robotics~\cite{lesort2020continual}, industrial equipment monitoring~\cite{dallepezze2025multilabel}, driver identification~\cite{fanan2025driver}, fault diagnosis~\cite{yan2025compact,ding2024selfdriven,lin2025diffusion}, and adaptive assistants.
 
-The continual learning community has developed numerous methods to mitigate catastrophic forgetting, broadly categorized into: (1) regularization-based approaches that constrain parameter updates~\cite{kirkpatrick2017overcoming,zenke2017continual,aljundi2018memory}, (2) replay-based methods that store exemplars~\cite{rebuffi2017icarl,chaudhry2019tiny}, (3) parameter isolation techniques that allocate dedicated parameters~\cite{rusu2016progressive,mallya2018packnet}, and (4) architecture-based methods that dynamically expand networks~\cite{yoon2017lifelong,xu2018reinforced}. Among these, regularization-based methods are particularly attractive due to their simplicity, memory efficiency, and strong theoretical foundations.
+The continual learning community has developed numerous methods to mitigate catastrophic forgetting, broadly categorized into: (1) regularization-based approaches that constrain parameter updates~\cite{kirkpatrick2017overcoming,zenke2017continual,aljundi2018memory}, (2) replay-based methods that store exemplars~\cite{rebuffi2017icarl,chaudhry2019tiny}, (3) parameter isolation techniques that allocate dedicated parameters~\cite{rusu2016progressive,mallya2018packnet}, and (4) architecture-based methods that dynamically expand networks~\cite{yoon2017lifelong,xu2018reinforced}. Among these, regularization-based methods are particularly attractive due to their simplicity, memory efficiency, and strong theoretical foundations. These approaches have been successfully applied to diverse domains including surface defect inspection~\cite{chen2025surface}, remote sensing~\cite{chen2023online}, intrusion detection in IoT networks~\cite{zhang2024federated}, and specific emitter identification~\cite{liu2024emitter}.
 
 However, despite extensive research, \textbf{the comparative effectiveness of regularization methods lacks rigorous statistical validation}. Most prior work reports single-seed results or limited multi-seed experiments (2--3 seeds), making it difficult to assess statistical significance and reproducibility~\cite{henderson2018deep,lucic2018gans}. Furthermore, while continual learning frameworks such as Avalanche~\cite{lomonaco2021avalanche} have facilitated systematic experimentation, investigation of alternative output activation functions such as sigmoid for continual learning remains limited.
 
@@ -100,7 +100,7 @@ In this work, we build upon the Walsh Negotiation framework of Korhan and {\"O}n
 
 \subsection{Catastrophic forgetting in neural networks}
 
-Catastrophic forgetting was first identified by McCloskey and Cohen~\cite{mccloskey1989catastrophic}, who demonstrated that connectionist networks exhibit rapid degradation on previously learned tasks when exposed to new data. French~\cite{french1999catastrophic} provided a comprehensive review of the phenomenon in connectionist networks. This interference has been attributed to the distributed representations in neural networks, where parameters are shared across multiple tasks, causing interference during sequential learning.
+Catastrophic forgetting was first identified by McCloskey and Cohen~\cite{mccloskey1989catastrophic}, who demonstrated that connectionist networks exhibit rapid degradation on previously learned tasks when exposed to new data. French~\cite{french1999catastrophic} provided a comprehensive review of the phenomenon in connectionist networks. This interference has been attributed to the distributed representations in neural networks, where parameters are shared across multiple tasks, causing interference during sequential learning. Recent studies have addressed catastrophic forgetting across diverse application domains, including tabular data classification~\cite{garcia2025tabular}, industrial process regression~\cite{groteramm2023regression}, and online continual learning with knowledge distillation~\cite{han2022online}.
 
 \subsection{Regularization-based continual learning}
 
@@ -839,5 +839,31 @@ All datasets used in this study (MNIST, CIFAR-10, CIFAR-100) are publicly availa
 
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
+
+\section*{Author Biographies}
+
+\begin{biography}[salih_colakoglu.png]{Salih \c{C}olako\u{g}lu}
+received the B.S. degree in electronic and communication engineering from Y{\i}ld{\i}z Technical University, Istanbul, Turkey, in 2014, and the M.S. degree in electrical and electronics engineering from Marmara University, Istanbul, in 2022, where his thesis focused on the design, fabrication, and characterization of a novel Lamb wave device. He is currently pursuing the Ph.D. degree in electrical and electronics engineering at Marmara University, under the supervision of Prof.\ Dr.\ Mustafa Onat.
+
+Since 2020, he has been a Research Assistant with the Department of Electrical and Electronics Engineering, Marmara University. From 2012 to 2014, he was the Co-Founder and CEO of Teslaref Engineering, Istanbul, developing high-tech information systems and smart electronic devices. From 2014 to 2025, he served as the General Coordinator at Kodar Bili\c{s}im, Istanbul. His prior research was conducted at the Sabanc{\i} University Nanotechnology Research and Application Center (SUNUM) Laboratory, in collaboration with T\"{U}B\.{I}TAK ARDEB, focusing on RF MEMS resonators, acoustic plate waves, and micro/nanofabrication.
+
+His current research interests include deep learning, continual learning, catastrophic forgetting mitigation, Walsh--Hadamard codes, structured negotiation paradigms for neural networks, embedded systems, and signal processing. ORCID: 0000-0002-2180-5073.
+\end{biography}
+
+\begin{biography}[nuri_korhan.png]{Nuri Korhan}
+received the M.Sc. and Ph.D. degrees in mechatronics engineering from Istanbul Technical University, Istanbul, Turkey, in 2015 and 2023, respectively. His doctoral thesis focused on the classification of ten different motor imagery EEG signals using deep neural networks.
+
+From 2013 to 2023, he was a Research Assistant with Istanbul Technical University, where he developed and implemented neural network models for brain--computer interfaces, computer vision applications, and embedded systems.
+
+His research interests include deep learning, continual learning, negotiated representations, brain--computer interfaces, and motor imagery EEG classification. He introduced the negotiation paradigm for machine learning and has authored publications on neural network-based signal classification. ORCID: 0000-0003-4351-2885.
+\end{biography}
+
+\begin{biography}[mustafa_onat.jpg]{Mustafa Onat}
+received the B.Sc. degree in electrical and electronics engineering from Middle East Technical University, Ankara, Turkey, in 1988, and the M.Sc. and Ph.D. degrees in computer-control engineering from Marmara University, Istanbul, Turkey, in 1996 and 2001, respectively.
+
+From 1991 to 1994, he was an Instructor at Siirt University Vocational School. In 1994, he joined Marmara University as a Research Assistant with the Technical Education Faculty. He was promoted to Associate Professor in 2010 and transferred to the Faculty of Engineering in 2011, where he currently serves as a Professor with the Department of Electrical and Electronics Engineering, Control Systems Division.
+
+His research interests include control systems, power electronics, neural networks, fault diagnosis, and intelligent systems. He has supervised numerous graduate theses and contributed to projects aligned with sustainable energy and smart systems. ORCID: 0000-0003-4304-3361.
+\end{biography}
 
 \end{document}
