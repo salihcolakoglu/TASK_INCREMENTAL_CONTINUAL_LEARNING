@@ -1,0 +1,109 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{mccloskey1989catastrophic}
+M.~McCloskey, N.~J. Cohen, Catastrophic interference in connectionist networks:
+  The sequential learning problem, in: Psychology of Learning and Motivation,
+  Vol.~24, Academic Press, New York, NY, USA, 1989, pp. 109--165.
+
+\bibitem{french1999catastrophic}
+R.~M. French, Catastrophic forgetting in connectionist networks, Trends in
+  Cognitive Sciences 3~(4) (1999) 128--135.
+
+\bibitem{lesort2020continual}
+T.~Lesort, V.~Lomonaco, A.~Stoian, D.~Maltoni, D.~Filliat,
+  N.~D{\'\i}az-Rodr{\'\i}guez, Continual learning for robotics: Definition,
+  framework, learning strategies, opportunities and challenges, Information
+  Fusion 58 (2020) 52--68.
+
+\bibitem{kirkpatrick2017overcoming}
+J.~Kirkpatrick, R.~Pascanu, N.~Rabinowitz, J.~Veness, G.~Desjardins, A.~A.
+  Rusu, K.~Milan, J.~Quan, T.~Ramalho, A.~Grabska-Barwinska, D.~Hassabis,
+  C.~Clopath, D.~Kumaran, R.~Hadsell, Overcoming catastrophic forgetting in
+  neural networks, Proceedings of the National Academy of Sciences 114~(13)
+  (2017) 3521--3526.
+
+\bibitem{zenke2017continual}
+F.~Zenke, B.~Poole, S.~Ganguli, Continual learning through synaptic
+  intelligence, in: Proceedings of the 34th International Conference on Machine
+  Learning (ICML), Sydney, Australia, 2017, pp. 3987--3995.
+
+\bibitem{aljundi2018memory}
+R.~Aljundi, F.~Babiloni, M.~Elhoseiny, M.~Rohrbach, T.~Tuytelaars, Memory aware
+  synapses: Learning what (not) to forget, in: Proceedings of the European
+  Conference on Computer Vision (ECCV), Munich, Germany, 2018, pp. 139--154.
+
+\bibitem{rebuffi2017icarl}
+S.-A. Rebuffi, A.~Kolesnikov, G.~Sperl, C.~H. Lampert, {iCaRL}: Incremental
+  classifier and representation learning, in: Proceedings of the IEEE/CVF
+  Conference on Computer Vision and Pattern Recognition (CVPR), Honolulu, HI,
+  USA, 2017, pp. 5533--5542.
+
+\bibitem{chaudhry2019tiny}
+A.~Chaudhry, M.~Ranzato, M.~Rohrbach, M.~Elhoseiny, Efficient lifelong learning
+  with {A-GEM}, in: Proceedings of the International Conference on Learning
+  Representations (ICLR), New Orleans, LA, USA, 2019.
+
+\bibitem{rusu2016progressive}
+A.~A. Rusu, N.~C. Rabinowitz, G.~Desjardins, H.~Soyer, J.~Kirkpatrick,
+  K.~Kavukcuoglu, R.~Pascanu, R.~Hadsell, Progressive neural networks, arXiv
+  preprint arXiv:1606.04671 (2016).
+
+\bibitem{mallya2018packnet}
+A.~Mallya, S.~Lazebnik, {PackNet}: Adding multiple tasks to a single network by
+  iterative pruning, in: Proceedings of the IEEE/CVF Conference on Computer
+  Vision and Pattern Recognition (CVPR), Salt Lake City, UT, USA, 2018, pp.
+  7765--7773.
+
+\bibitem{yoon2017lifelong}
+J.~Yoon, E.~Yang, J.~Lee, S.~J. Hwang, Lifelong learning with dynamically
+  expandable networks, in: Proceedings of the International Conference on
+  Learning Representations (ICLR), Vancouver, BC, Canada, 2018.
+
+\bibitem{xu2018reinforced}
+J.~Xu, Z.~Zhu, Reinforced continual learning, in: Advances in Neural
+  Information Processing Systems (NeurIPS), Montr{\'e}al, QC, Canada, 2018, pp.
+  907--916.
+
+\bibitem{henderson2018deep}
+P.~Henderson, R.~Islam, P.~Bachman, J.~Pineau, D.~Precup, D.~Meger, Deep
+  reinforcement learning that matters, in: Proceedings of the AAAI Conference
+  on Artificial Intelligence, New Orleans, LA, USA, 2018, pp. 3207--3214.
+
+\bibitem{lucic2018gans}
+M.~Lucic, K.~Kurach, M.~Michalski, S.~Gelly, O.~Bousquet, Are {GANs} created
+  equal? {A} large-scale study, in: Advances in Neural Information Processing
+  Systems (NeurIPS), Montr{\'e}al, QC, Canada, 2018, pp. 698--707.
+
+\bibitem{lomonaco2021avalanche}
+V.~Lomonaco, L.~Pellegrini, A.~Cossu, A.~Carta, G.~Graffieti, T.~L. Hayes,
+  M.~De~Lange, M.~Masana, J.~Pomponi, G.~M. van~de Ven, et~al., Avalanche: An
+  end-to-end library for continual learning, in: Proceedings of the IEEE/CVF
+  Conference on Computer Vision and Pattern Recognition Workshops (CVPRW),
+  Nashville, TN, USA, 2021, pp. 3600--3610.
+
+\bibitem{korhan2023negotiation_paradigm}
+N.~Korhan, S.~Bayram, Negotiated representations to prevent overfitting in
+  machine learning applications, arXiv preprint arXiv:2311.11410 (2023).
+
+\bibitem{korhan2023negotiated}
+N.~Korhan, C.~{\"O}ner, Negotiated representations to prevent forgetting in
+  machine learning applications, arXiv preprint arXiv:2312.00237 (2023).
+
+\bibitem{van2019three}
+G.~M. van~de Ven, A.~S. Tolias, Three scenarios for continual learning, arXiv
+  preprint arXiv:1904.07734 (2019).
+
+\bibitem{li2017learning}
+Z.~Li, D.~Hoiem, Learning without forgetting, IEEE Transactions on Pattern
+  Analysis and Machine Intelligence 40~(12) (2018) 2935--2947.
+
+\bibitem{olmez2021walsh}
+T.~Olmez, Z.~Dokur, Strengthening the training of convolutional neural networks
+  by using {Walsh} matrix, arXiv preprint arXiv:2104.00035 (2021).
+
+\end{thebibliography}

@@ -1,0 +1,171 @@
+# ============================================================================
+# Split CIFAR-100 Configuration - Optimal Hyperparameters
+# ============================================================================
+# Based on experimental results from December 7, 2025
+# EWC hyperparameter search: λ ∈ [1, 10, 50, 100, 500, 1000, 5000]
+# CRITICAL: λ=10 is optimal, λ≥50 causes CATASTROPHIC FAILURE (10% accuracy)
+# This is the HARDEST dataset - most room for improvement
+
+# Dataset Configuration
+dataset:
+  name: "split_cifar100"
+  n_tasks: 10
+  classes_per_task: 10
+  total_classes: 100
+  data_root: "./data"
+  input_size: [32, 32]  # Image dimensions
+  input_channels: 3      # RGB
+
+# Model Architecture
+model:
+  architecture: "convnet"  # ConvNet for CIFAR
+  dropout: 0.0
+
+# Training Hyperparameters (Common across all methods)
+training:
+  epochs_per_task: 10
+  batch_size: 128
+  num_workers: 4
+  validation_split: 0.0
+
+# Optimizer Settings
+optimizer:
+  type: "sgd"
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 0.0
+
+# Method-Specific Hyperparameters (Optimal values from grid search)
+# ============================================================================
+
+# Fine-tuning (Baseline)
+finetune:
+  # No special hyperparameters
+  # Results: 42.39% accuracy, 21.96% forgetting (high catastrophic forgetting)
+
+# EWC (Elastic Weight Consolidation)
+ewc:
+  lambda: 10.0        # ⚠️ CRITICAL: Optimal value from grid search (3 seeds)
+  mode: "online"      # "online" or "separate"
+  gamma: 1.0          # Decay factor for online mode
+  # Results: 55.33% ± 1.42% accuracy, 15.01% ± 0.65% forgetting
+  # Grid search results (mean ± std over 3 seeds):
+  #   λ=1:    42.71% ± 1.41% acc (under-regularized, 34.41% forgetting)
+  #   λ=10:   55.33% ± 1.42% acc (OPTIMAL) ⭐
+  #   λ=50:   10.00% ± 0.00% acc (FAILED - random guessing on 10 classes)
+  #   λ≥100:  10.00% ± 0.00% acc (FAILED - over-regularized)
+  # WARNING: DO NOT use λ=1000 (MNIST value) - causes catastrophic failure!
+  # Note: Requires even SMALLER λ than CIFAR-10 due to task complexity
+
+# SI (Synaptic Intelligence)
+si:
+  lambda: 1.0         # Regularization strength - ROBUST across all datasets
+  epsilon: 0.001      # Numerical stability constant
+  damping: 0.1        # Damping parameter for importance normalization
+  # Results: 47.75% accuracy, 3.71% forgetting (LOWEST forgetting)
+  # Note: Same hyperparameters work across all datasets!
+  # Trade-off: 7.58% lower accuracy than EWC but 11.30% lower forgetting
+
+# MAS (Memory Aware Synapses)
+mas:
+  lambda: 1.0         # Regularization strength - OPTIMAL from grid search
+  num_samples: 100    # Number of samples for importance estimation
+  # Results: 63.51% accuracy, 5.49% forgetting
+  # Grid search tested: λ ∈ [0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0], N ∈ [100, 200, 500]
+  # Best config: λ=1.0, N=100 (best accuracy AND lowest forgetting)
+  # Note: Beats EWC (55.33%) by +8.18%!
+
+# LwF (Learning without Forgetting)
+lwf:
+  lambda: 0.5         # Distillation loss weight - OPTIMAL from grid search
+  temperature: 5.0    # Temperature for softmax softening
+  # Results: 69.18% accuracy, 8.57% forgetting ⭐ BEST METHOD on CIFAR-100!
+  # Grid search tested: λ ∈ [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0], T ∈ [1.0, 2.0, 3.0, 4.0, 5.0]
+  # Best config: λ=0.5, T=5.0 (BEATS ALL OTHER METHODS by +13.85% vs EWC!)
+  # Note: MASSIVE improvement over previous best (EWC 55.33% → LwF 69.18%)
+
+# Experimental Settings
+experiment:
+  seeds: [42, 43, 44]  # Multiple seeds REQUIRED for statistical significance
+  save_checkpoints: false
+  use_tensorboard: false
+  use_wandb: false
+  checkpoint_dir: "./results/checkpoints"
+  log_dir: "./results/tensorboard"
+
+# Performance Benchmarks (for reference)
+# ============================================================================
+# These are the target performances to match or beat:
+# This is the most challenging dataset - focus algorithm development here!
+benchmarks:
+  finetune:
+    avg_accuracy: 0.4239
+    forgetting: 0.2196
+  ewc_optimal:
+    avg_accuracy: 0.5533
+    avg_accuracy_std: 0.0142
+    forgetting: 0.1501
+    forgetting_std: 0.0065
+    lambda: 10
+  si:
+    avg_accuracy: 0.4775
+    forgetting: 0.0371
+  mas:
+    avg_accuracy: 0.6351  # Better than EWC (+8.18%)
+    forgetting: 0.0549
+  lwf:
+    avg_accuracy: 0.6918  # ⭐ BEST accuracy on CIFAR-100 (+13.85% vs EWC!)
+    forgetting: 0.0857    # Good forgetting (2nd best after SI)
+
+# Hyperparameter Search Results (EWC)
+# ============================================================================
+# For reference - full grid search results on CIFAR-100 (3 seeds):
+grid_search_ewc:
+  lambda_1:
+    accuracy_mean: 0.4271
+    accuracy_std: 0.0141
+    forgetting_mean: 0.3441
+    forgetting_std: 0.0098
+  lambda_10:
+    accuracy_mean: 0.5533  # ⭐ OPTIMAL
+    accuracy_std: 0.0142
+    forgetting_mean: 0.1501
+    forgetting_std: 0.0065
+  lambda_50:
+    accuracy_mean: 0.1000  # ❌ FAILED (random = 1/10)
+    accuracy_std: 0.0000
+    forgetting_mean: 0.2646
+    forgetting_std: 0.1124
+  lambda_100:
+    accuracy_mean: 0.1000  # ❌ FAILED
+    accuracy_std: 0.0000
+    forgetting_mean: 0.1582
+    forgetting_std: 0.0091
+  lambda_500:
+    accuracy_mean: 0.1000  # ❌ FAILED
+    accuracy_std: 0.0000
+    forgetting_mean: 0.0543
+    forgetting_std: 0.0033
+  lambda_1000:
+    accuracy_mean: 0.1000  # ❌ FAILED
+    accuracy_std: 0.0000
+    forgetting_mean: 0.0543
+    forgetting_std: 0.0033
+  lambda_5000:
+    accuracy_mean: 0.1000  # ❌ FAILED
+    accuracy_std: 0.0000
+    forgetting_mean: 0.0543
+    forgetting_std: 0.0033
+
+# Research Priorities
+# ============================================================================
+# CIFAR-100 is the best dataset for algorithm development because:
+# 1. Clear differentiation between methods (EWC: 55.33%, SI: 47.75%, FT: 42.39%)
+# 2. Significant room for improvement (55.33% << 100%)
+# 3. High forgetting (15-22%), plenty of space to reduce
+# 4. Realistic difficulty (not too easy like MNIST, not impossible)
+#
+# Target for new algorithms:
+# - Match EWC's 55.33% accuracy
+# - Match SI's 3.71% forgetting
+# - Best of both worlds!

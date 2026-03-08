@@ -1,0 +1,320 @@
+================================================================================
+              REPRODUCIBILITY PACKAGE - DELIVERABLES SUMMARY
+================================================================================
+
+Project: Walsh-Hadamard Negotiation for Task-Incremental Continual Learning
+Date: February 9, 2026
+Version: 1.0
+
+================================================================================
+MAIN DELIVERABLE
+================================================================================
+
+📦 reproducibility_package.tar.gz
+   Size: 146 KB (compressed)
+   Files: 100
+   Contents: Complete code, configs, and experimental results
+   
+   MD5:    49aad4ab9b5058d7f42a3298096cce47
+   SHA256: 7b9f404405ea6d56069ddb92b1200fb433f3187a3f2b3a2bb60a00e1305678e0
+
+================================================================================
+VERIFICATION FILES
+================================================================================
+
+✓ reproducibility_package.tar.gz.md5    (65 bytes)
+✓ reproducibility_package.tar.gz.sha256 (97 bytes)
+✓ verify_package.sh                     (4.2 KB, executable)
+
+================================================================================
+DOCUMENTATION SUITE (5 files, ~42 KB total)
+================================================================================
+
+1. QUICKSTART.md (5.7 KB)
+   Target: First-time users
+   Purpose: Get running in 10 minutes
+   Content:
+   - Extract and verify package
+   - Setup environment (5-10 min)
+   - Run quick test (1 min)
+   - Run full experiment (5 min)
+   - Command cheat sheet
+
+2. PACKAGE_README.md (9.5 KB)
+   Target: All users
+   Purpose: Complete package overview
+   Content:
+   - Quick start instructions
+   - What's included
+   - Full reproduction guide
+   - Expected results
+   - Troubleshooting
+   - Citation information
+
+3. REPRODUCE.md (8.0 KB)
+   Target: Researchers reproducing results
+   Purpose: Detailed step-by-step reproduction
+   Content:
+   - System requirements
+   - Environment setup (both conda and pip)
+   - Running single experiments
+   - Multi-seed reproduction
+   - Expected performance metrics
+   - Analysis and visualization
+   - Troubleshooting guide
+
+4. MANIFEST.md (9.4 KB)
+   Target: Reference documentation
+   Purpose: Complete package contents listing
+   Content:
+   - Full directory structure
+   - File-by-file descriptions
+   - File counts by category
+   - Archive creation details
+   - Version information
+
+5. REPRODUCIBILITY_INDEX.md (11.0 KB)
+   Target: Package maintainers
+   Purpose: Master index and maintenance guide
+   Content:
+   - Complete deliverables index
+   - Quick reference for all users
+   - Distribution instructions
+   - Maintenance procedures
+   - Support workflow
+
+================================================================================
+ARCHIVE CONTENTS (reproducibility_package.tar.gz)
+================================================================================
+
+Source Code (src/)
+------------------
+✓ 19 Python files
+  - 12 baseline implementations (EWC, SI, MAS, LwF, Walsh, etc.)
+  - 3 model architectures (MLP, ConvNet, ConvNetLite)
+  - 5 utility modules (data, metrics, training, activations)
+
+Experiments (experiments/)
+--------------------------
+✓ 23 Python scripts
+  - run_walsh_negotiation.py (main experiment)
+  - 11 baseline experiment runners
+  - 3 analysis scripts
+  - 3 visualization scripts
+  - 5 utility experiment scripts
+
+Configurations (configs/)
+-------------------------
+✓ 6 files
+  - split_mnist.yaml
+  - split_cifar10.yaml
+  - split_cifar100.yaml
+  - config_loader.py
+  - default_config.py
+  - README.md
+
+Results (results/walsh_experiments/)
+------------------------------------
+✓ 17 JSON files
+  - Split MNIST: 5 seeds (42-46)
+  - Split CIFAR-10: 5 seeds (42-46)
+  - Split CIFAR-100: 7 files (5 seeds + extras)
+
+Core Files
+----------
+✓ README.md (project overview)
+✓ REPRODUCE.md (included in archive)
+✓ requirements.txt (Python dependencies)
+
+================================================================================
+USAGE GUIDE
+================================================================================
+
+For First-Time Users:
+  1. Read: QUICKSTART.md
+  2. Extract: tar -xzf reproducibility_package.tar.gz
+  3. Verify: ./verify_package.sh
+  4. Setup: conda create -n continual_learning python=3.10
+  5. Install: pip install -r requirements.txt
+  6. Test: python experiments/run_walsh_negotiation.py --epochs 1 --seed 42
+
+For Full Reproduction:
+  1. Read: REPRODUCE.md
+  2. Follow environment setup
+  3. Run multi-seed experiments (see REPRODUCE.md)
+  4. Compare results with provided JSON files
+  5. Generate visualizations
+
+For Package Reference:
+  1. Read: MANIFEST.md (complete file listing)
+  2. Read: PACKAGE_README.md (complete guide)
+  3. Read: REPRODUCIBILITY_INDEX.md (maintenance)
+
+================================================================================
+EXPECTED RESULTS (50 epochs, alpha=0.5)
+================================================================================
+
+Dataset        | Avg Accuracy | Forgetting | Runtime (RTX 3090)
+---------------|--------------|------------|--------------------
+Split MNIST    | 97.5% ± 0.3% | 0.5% ± 0.2% | ~5 min/seed
+Split CIFAR-10 | 87.2% ± 0.8% | 3.1% ± 0.5% | ~7 min/seed
+Split CIFAR-100| 65.3% ± 1.2% | 8.7% ± 0.9% | ~15 min/seed
+
+Total runtime for all 15 experiments: ~2-3 hours
+
+================================================================================
+VERIFICATION
+================================================================================
+
+Package Integrity:
+  md5sum -c reproducibility_package.tar.gz.md5
+  sha256sum -c reproducibility_package.tar.gz.sha256
+
+Content Verification:
+  ./verify_package.sh
+
+Expected output:
+  ✓ All essential files present
+  ✓ 100 files in archive
+  ✓ Python available
+  ✓ Dependencies installable
+
+================================================================================
+SYSTEM REQUIREMENTS
+================================================================================
+
+Minimum:
+  - GPU: 8 GB VRAM
+  - RAM: 16 GB
+  - Storage: 5 GB
+  - Python: 3.10+
+  - CUDA: 11.8+
+
+Recommended (used in experiments):
+  - GPU: NVIDIA RTX 3090 (24 GB)
+  - RAM: 32 GB
+  - Storage: 10 GB
+  - Python: 3.10.19
+  - CUDA: 12.1
+
+================================================================================
+DISTRIBUTION CHECKLIST
+================================================================================
+
+Minimum Package:
+  ☐ reproducibility_package.tar.gz
+  ☐ reproducibility_package.tar.gz.md5
+  ☐ reproducibility_package.tar.gz.sha256
+  ☐ QUICKSTART.md
+
+Complete Package (recommended):
+  ☐ reproducibility_package.tar.gz
+  ☐ reproducibility_package.tar.gz.md5
+  ☐ reproducibility_package.tar.gz.sha256
+  ☐ QUICKSTART.md
+  ☐ PACKAGE_README.md
+  ☐ REPRODUCE.md
+  ☐ MANIFEST.md
+  ☐ REPRODUCIBILITY_INDEX.md
+  ☐ verify_package.sh
+
+================================================================================
+QUICK COMMANDS
+================================================================================
+
+Extract:
+  tar -xzf reproducibility_package.tar.gz && cd reproducibility_package/
+
+Verify:
+  ./verify_package.sh
+
+Setup (conda):
+  conda create -n continual_learning python=3.10 -y
+  conda activate continual_learning
+  conda install pytorch torchvision pytorch-cuda=12.1 -c pytorch -c nvidia -y
+  pip install -r requirements.txt
+
+Quick Test:
+  python experiments/run_walsh_negotiation.py --dataset split_mnist --epochs 1 --seed 42
+
+Full Experiment:
+  python experiments/run_walsh_negotiation.py --dataset split_mnist --epochs 50 --alpha 0.5 --seed 42
+
+Visualize:
+  python experiments/visualize_walsh_learning_curves.py --results_dir results/walsh_experiments
+
+================================================================================
+FILE LOCATIONS
+================================================================================
+
+All files located in:
+  /home/nuri/miniconda3/envs/ContinualML/projects/TASK_INCREMENTAL_CONTINUAL_LEARNING/
+
+Archive and documentation:
+  ./reproducibility_package.tar.gz
+  ./reproducibility_package.tar.gz.md5
+  ./reproducibility_package.tar.gz.sha256
+  ./verify_package.sh
+  ./QUICKSTART.md
+  ./PACKAGE_README.md
+  ./REPRODUCE.md
+  ./MANIFEST.md
+  ./REPRODUCIBILITY_INDEX.md
+  ./DELIVERABLES_SUMMARY.txt (this file)
+
+================================================================================
+SUPPORT
+================================================================================
+
+Issue: Package won't extract
+  → Check checksums
+  → Try: tar -xzf reproducibility_package.tar.gz
+
+Issue: Verification fails
+  → Run: ./verify_package.sh
+  → Check error messages
+  → Ensure all files present
+
+Issue: Environment setup fails
+  → Check Python version: python --version
+  → Check CUDA: nvidia-smi
+  → Follow REPRODUCE.md setup guide
+
+Issue: Results don't match
+  → Check seed: --seed 42
+  → Minor variations (±1-2%) are normal
+  → Compare with provided JSON files
+
+Issue: Training too slow
+  → Check GPU usage: nvidia-smi
+  → Reduce batch size: --batch_size 64
+  → Use lite model: --lite
+
+================================================================================
+CITATION
+================================================================================
+
+@article{walsh_negotiation_2026,
+  title={Walsh-Hadamard Negotiation for Task-Incremental Continual Learning},
+  author={[Your Name]},
+  journal={[Venue]},
+  year={2026}
+}
+
+================================================================================
+SUMMARY
+================================================================================
+
+✅ Main archive: reproducibility_package.tar.gz (146 KB, 100 files)
+✅ Checksums: MD5 and SHA256 for verification
+✅ Documentation: 5 comprehensive guides (~42 KB)
+✅ Verification: Automated script (verify_package.sh)
+✅ Results: 15 pre-computed experiments
+✅ Code: 12 baselines + 3 architectures
+✅ Time to reproduce: 10 min (quick test), 2-3 hours (full)
+
+Package Status: ✓ READY FOR DISTRIBUTION
+
+================================================================================
+END OF DELIVERABLES SUMMARY
+================================================================================

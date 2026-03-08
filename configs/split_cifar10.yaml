@@ -1,0 +1,140 @@
+# ============================================================================
+# Split CIFAR-10 Configuration - Optimal Hyperparameters
+# ============================================================================
+# Based on experimental results from December 7, 2025
+# EWC hyperparameter search: λ ∈ [1, 10, 50, 100, 500, 1000, 5000]
+# CRITICAL: λ=50 is optimal, λ≥100 causes CATASTROPHIC FAILURE
+
+# Dataset Configuration
+dataset:
+  name: "split_cifar10"
+  n_tasks: 5
+  classes_per_task: 2
+  total_classes: 10
+  data_root: "./data"
+  input_size: [32, 32]  # Image dimensions
+  input_channels: 3      # RGB
+
+# Model Architecture
+model:
+  architecture: "convnet"  # ConvNet for CIFAR
+  dropout: 0.0
+
+# Training Hyperparameters (Common across all methods)
+training:
+  epochs_per_task: 10
+  batch_size: 128
+  num_workers: 4
+  validation_split: 0.0
+
+# Optimizer Settings
+optimizer:
+  type: "sgd"
+  lr: 0.01
+  momentum: 0.9
+  weight_decay: 0.0
+
+# Method-Specific Hyperparameters (Optimal values from grid search)
+# ============================================================================
+
+# Fine-tuning (Baseline)
+finetune:
+  # No special hyperparameters
+  # Results: 73.89% accuracy, 13.31% forgetting
+
+# EWC (Elastic Weight Consolidation)
+ewc:
+  lambda: 50.0        # ⚠️ CRITICAL: Optimal value from grid search
+  mode: "online"      # "online" or "separate"
+  gamma: 1.0          # Decay factor for online mode
+  # Results: 79.79% accuracy, 10.11% forgetting
+  # Grid search results:
+  #   λ=1:    70.59% acc (under-regularized, 26.31% forgetting)
+  #   λ=10:   79.64% acc (good)
+  #   λ=50:   79.79% acc (OPTIMAL) ⭐
+  #   λ=100:  50.00% acc (FAILED - random guessing)
+  #   λ≥500:  50.00% acc (FAILED - over-regularized)
+  # WARNING: DO NOT use λ=1000 (MNIST value) - causes complete failure!
+
+# SI (Synaptic Intelligence)
+si:
+  lambda: 1.0         # Regularization strength - ROBUST across all datasets
+  epsilon: 0.001      # Numerical stability constant
+  damping: 0.1        # Damping parameter for importance normalization
+  # Results: 74.02% accuracy, 4.32% forgetting (LOWEST forgetting)
+  # Note: Same hyperparameters work across all datasets!
+  # Trade-off: 5.77% lower accuracy than EWC but 5.79% lower forgetting
+
+# MAS (Memory Aware Synapses)
+mas:
+  lambda: 1.0         # Regularization strength - OPTIMAL from grid search
+  num_samples: 200    # Number of samples for importance estimation
+  # Results: 82.34% accuracy, 7.96% forgetting
+  # Grid search tested: λ ∈ [0.1, 0.5, 1.0, 5.0, 10.0, 50.0, 100.0], N ∈ [100, 200, 500]
+  # Best config: λ=1.0, N=200 (best accuracy)
+  # Note: Competitive performance, better than EWC on this dataset
+
+# LwF (Learning without Forgetting)
+lwf:
+  lambda: 2.0         # Distillation loss weight - OPTIMAL from grid search
+  temperature: 1.0    # Temperature for softmax softening
+  # Results: 90.68% accuracy, 1.39% forgetting ⭐ BEST METHOD on CIFAR-10!
+  # Grid search tested: λ ∈ [0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 20.0], T ∈ [1.0, 2.0, 3.0, 4.0, 5.0]
+  # Best config: λ=2.0, T=1.0 (BEATS ALL OTHER METHODS by +10.89% vs EWC!)
+  # Note: MASSIVE improvement over previous best (EWC 79.79% → LwF 90.68%)
+
+# Experimental Settings
+experiment:
+  seeds: [42, 43, 44]  # Multiple seeds for statistical significance
+  save_checkpoints: false
+  use_tensorboard: false
+  use_wandb: false
+  checkpoint_dir: "./results/checkpoints"
+  log_dir: "./results/tensorboard"
+
+# Performance Benchmarks (for reference)
+# ============================================================================
+# These are the target performances to match or beat:
+benchmarks:
+  finetune:
+    avg_accuracy: 0.7389
+    forgetting: 0.1331
+  ewc_optimal:
+    avg_accuracy: 0.7979
+    forgetting: 0.1011
+    lambda: 50
+  si:
+    avg_accuracy: 0.7402
+    forgetting: 0.0432
+  mas:
+    avg_accuracy: 0.8234
+    forgetting: 0.0796
+  lwf:
+    avg_accuracy: 0.9068  # ⭐ BEST accuracy on CIFAR-10 (+10.89% vs EWC!)
+    forgetting: 0.0139    # ⭐ Excellent forgetting (2nd best)
+
+# Hyperparameter Search Results (EWC)
+# ============================================================================
+# For reference - full grid search results on CIFAR-10:
+grid_search_ewc:
+  lambda_1:
+    accuracy: 0.7059
+    forgetting: 0.2631
+  lambda_10:
+    accuracy: 0.7964
+    forgetting: 0.1283
+  lambda_50:
+    accuracy: 0.7979  # ⭐ OPTIMAL
+    forgetting: 0.1011
+  lambda_100:
+    accuracy: 0.5000  # ❌ FAILED
+    forgetting: 0.3553
+  lambda_500:
+    accuracy: 0.5000  # ❌ FAILED
+    forgetting: 0.1068
+  lambda_1000:
+    accuracy: 0.5000  # ❌ FAILED
+    forgetting: 0.1068
+  lambda_5000:
+    accuracy: 0.5000  # ❌ FAILED
+    forgetting: 0.1068
