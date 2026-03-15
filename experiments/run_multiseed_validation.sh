@@ -2,7 +2,6 @@
 ################################################################################
 # Multi-Seed Validation Runner
 # Purpose: Run all key experiments with multiple seeds for statistical validation
-# Author: Claude
 # Date: December 18, 2025
 ################################################################################
 

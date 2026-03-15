@@ -5,7 +5,6 @@ Generates publication-ready figures showing:
 1. Per-task accuracy curves for each dataset (MNIST, CIFAR-10, CIFAR-100)
 2. Forgetting trajectories showing how Task 1 accuracy degrades across datasets
 
-Author: Claude
 Date: February 7, 2026
 """
 

@@ -7,7 +7,6 @@ Generates publication-ready figures:
 3. Accuracy-Forgetting trade-off plots
 4. Box plots showing variance across seeds
 
-Author: Claude
 Date: December 19, 2025
 """
 

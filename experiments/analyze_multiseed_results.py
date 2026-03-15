@@ -7,7 +7,6 @@ This script aggregates results from multiple seeds and computes:
 - Statistical significance tests
 - Publication-ready tables
 
-Author: Claude
 Date: December 18, 2025
 """
 

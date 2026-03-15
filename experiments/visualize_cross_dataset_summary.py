@@ -9,7 +9,6 @@ The figure includes:
 2. Grouped bar chart: Forgetting comparison across datasets
 3. Scatter plot: Accuracy-forgetting trade-off with Walsh highlighted
 
-Author: Claude
 Date: February 7, 2026
 """
 
