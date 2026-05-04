@@ -102,3 +102,6 @@ tmp/
 # OS
 .DS_Store
 Thumbs.db
+
+# Exception: experiment logs under logs/ are tracked as academic evidence
+!logs/**/*.log

@@ -11,12 +11,12 @@ MAIN DELIVERABLE
 ================================================================================
 
 📦 reproducibility_package.tar.gz
-   Size: 146 KB (compressed)
-   Files: 100
+   Size: 92 KB (compressed)
+   Files: 68
    Contents: Complete code, configs, and experimental results
    
-   MD5:    49aad4ab9b5058d7f42a3298096cce47
-   SHA256: 7b9f404405ea6d56069ddb92b1200fb433f3187a3f2b3a2bb60a00e1305678e0
+   MD5:    eeb112379ce1d846b3056a0ddb41a68a
+   SHA256: f237f7259d581b910d0afb7477f08f26d0d7101f2c141aaec6e3244c194cf8ef
 
 ================================================================================
 VERIFICATION FILES
@@ -175,7 +175,7 @@ Content Verification:
 
 Expected output:
   ✓ All essential files present
-  ✓ 100 files in archive
+  ✓ 68 files in archive
   ✓ Python available
   ✓ Dependencies installable
 
@@ -248,7 +248,7 @@ FILE LOCATIONS
 ================================================================================
 
 All files located in:
-  /home/nuri/miniconda3/envs/ContinualML/projects/TASK_INCREMENTAL_CONTINUAL_LEARNING/
+  <redacted>/TASK_INCREMENTAL_CONTINUAL_LEARNING/
 
 Archive and documentation:
   ./reproducibility_package.tar.gz
@@ -305,7 +305,7 @@ CITATION
 SUMMARY
 ================================================================================
 
-✅ Main archive: reproducibility_package.tar.gz (146 KB, 100 files)
+✅ Main archive: reproducibility_package.tar.gz (92 KB, 68 files)
 ✅ Checksums: MD5 and SHA256 for verification
 ✅ Documentation: 5 comprehensive guides (~42 KB)
 ✅ Verification: Automated script (verify_package.sh)

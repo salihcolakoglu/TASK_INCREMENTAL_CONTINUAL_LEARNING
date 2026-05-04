@@ -1,9 +1,9 @@
 # Reproducibility Package Manifest
 
 **Package**: `reproducibility_package.tar.gz`
-**Size**: 146 KB
+**Size**: 92 KB
 **Created**: 2026-02-09
-**Total Files**: 100
+**Total Files**: 68
 
 ## Contents Overview
 
@@ -250,4 +250,4 @@ tar -czvf reproducibility_package.tar.gz \
 ```
 
 **Date**: 2026-02-09
-**Working Directory**: `/home/nuri/miniconda3/envs/ContinualML/projects/TASK_INCREMENTAL_CONTINUAL_LEARNING`
+**Working Directory**: `<redacted>/TASK_INCREMENTAL_CONTINUAL_LEARNING`

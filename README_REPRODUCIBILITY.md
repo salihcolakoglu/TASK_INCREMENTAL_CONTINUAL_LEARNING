@@ -4,7 +4,7 @@ This directory contains a complete reproducibility package for the Walsh Negotia
 
 ## Package Files
 
-### Main Archive (146 KB, 100 files)
+### Main Archive (92 KB, 68 files)
 - `reproducibility_package.tar.gz` - Complete code, configurations, and results
 
 ### Verification
@@ -62,8 +62,8 @@ sha256sum -c reproducibility_package.tar.gz.sha256
 ```
 
 Expected checksums:
-- MD5: `49aad4ab9b5058d7f42a3298096cce47`
-- SHA256: `7b9f404405ea6d56069ddb92b1200fb433f3187a3f2b3a2bb60a00e1305678e0`
+- MD5: `eeb112379ce1d846b3056a0ddb41a68a`
+- SHA256: `f237f7259d581b910d0afb7477f08f26d0d7101f2c141aaec6e3244c194cf8ef`
 
 ## What's Inside the Archive?
 

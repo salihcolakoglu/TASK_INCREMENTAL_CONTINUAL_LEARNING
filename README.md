@@ -18,7 +18,7 @@ Research project implementing an exemplar-free, single-model, non-pretrained met
 
 ## Environment Setup
 
-This project uses the shared ContinualML conda environment with:
+This project uses a dedicated conda environment with:
 - Python 3.10.19
 - PyTorch 2.5.1 (CUDA 12.1)
 - Avalanche 0.6.0
