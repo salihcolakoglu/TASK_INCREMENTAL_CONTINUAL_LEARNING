@@ -1,5 +1,7 @@
 # FAZ 2 — ORTAM KURULUMU VE DENEY KUYRUĞU REHBERİ
 
+> **⚠️ SUPERSEDED (2026-08-28):** Bu belgenin deney kuyruğu (Bölüm C, C1-C6) geçerli değildir; C2/C5 komutları bağımsız denetimde (KB-03/KB-04) hatalı bulunmuştur. Geçerli kuyruk: **`docs/RUN_SHEET_R1_R4_v1.1.md`**. Kurulum bölümleri (A1-A4) hâlâ geçerlidir. Bu dosya arşiv amaçlı korunur (silinmez — proje kuralı K-05/K-07).
+
 **Hazırlayan:** Kimi (Yapay Zekâ Araştırma Asistanı) · **Tarih:** 2026-08-28
 **Hedef makine:** theBeast — Windows 11 Pro, RTX 4070 8 GB, sürücü 595.79 (CUDA 13.2), WSL 2.7.12
 **Hedef:** Makalenin eksik deneylerini, makaleyle birebir aynı kod/protokolle tamamlamak ve ham sonuçları JSON olarak toplamak.

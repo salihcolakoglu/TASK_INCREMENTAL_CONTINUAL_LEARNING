@@ -1,21 +1,29 @@
 """
-Run Joint Training (upper bound) on task-incremental continual learning benchmarks.
+Run Joint Training reference (upper reference point) on task-incremental
+continual learning benchmarks.
 
-Joint Training trains a single model on ALL tasks simultaneously (data from all
-tasks is visited in every epoch, with per-task head routing). It is the standard
-upper bound in continual learning: tasks are not learned sequentially, so there
-is no forgetting by construction.
+v1.1 (2026-08-28) — audit round-1 fixes (Codex 6.1 / Claude KB-12):
+  1. Batch-level interleaving: every joint epoch cycles through tasks at BATCH
+     granularity with a per-epoch shuffled task order (seeded), instead of
+     processing tasks as full sequential blocks. This removes the fixed
+     "last task is always last" recency bias of v1.0.
+  2. Unmeasured metrics are reported as null (None) with an explicit
+     metric_status field instead of 0.0 — no metric misstatement.
+  3. Unique run_id in the output filename + no-overwrite refusal: re-running
+     the same (dataset, seed) never silently destroys earlier evidence.
+  4. config_hash (sha256 of the canonical config) and the repo's git commit
+     (when available) are stored with the result.
+  5. Naming: method is 'joint_reference' — this is a reference point trained
+     with the baseline architecture/loss, NOT a universal mathematical upper
+     bound for Walsh Negotiation (different output structure).
+
+Budget definition (equal to the sequential protocol): 'epochs' counts passes
+over EACH task's training data (50 by default), matching the per-task epoch
+budget of the sequential experiments.
 
 Usage:
     python experiments/run_joint_training.py --dataset split_mnist --epochs 50 --seed 42
-    python experiments/run_joint_training.py --dataset split_cifar10 --epochs 50 --seed 42
     python experiments/run_joint_training.py --dataset split_cifar100 --n_tasks 10 --epochs 50 --seed 42
-
-Note: 'epochs' counts passes over EACH task's training data, matching the
-per-task epoch budget of the sequential experiments (equal-compute upper bound).
-
-Author: prepared for the ASOC submission (FAZ 2.1), follows the repository's
-existing script pattern (run_finetune.py / run_all_experiments.py).
 """
 
 import argparse
@@ -23,6 +31,8 @@ import sys
 import os
 import json
 import time
+import hashlib
+import subprocess
 from datetime import datetime
 from pathlib import Path
 
@@ -41,7 +51,8 @@ from src.utils import get_dataset
 
 def parse_args():
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description='Joint Training upper bound (task-incremental)')
+    parser = argparse.ArgumentParser(
+        description='Joint training reference (task-incremental, batch-interleaved)')
 
     # Dataset arguments
     parser.add_argument('--dataset', type=str, default='split_mnist',
@@ -62,7 +73,7 @@ def parse_args():
 
     # Training arguments
     parser.add_argument('--epochs', type=int, default=50,
-                       help='Passes over each task per joint epoch (default 50: equal-compute budget)')
+                       help='Passes over each task per joint epoch (default 50: equal-budget)')
     parser.add_argument('--batch_size', type=int, default=128,
                        help='Batch size')
     parser.add_argument('--lr', type=float, default=0.01,
@@ -77,7 +88,7 @@ def parse_args():
 
     # Other arguments
     parser.add_argument('--seed', type=int, default=42,
-                       help='Random seed')
+                       help='Random seed (init, data order, task interleave order)')
     parser.add_argument('--device', type=str, default='auto',
                        help='Device (auto, cuda, cpu)')
     parser.add_argument('--num_workers', type=int, default=4,
@@ -107,10 +118,71 @@ def get_architecture(dataset, architecture):
     return architecture
 
 
-def main():
-    """Main joint-training loop."""
-    args = parse_args()
+def get_git_commit():
+    """Return the repo's current commit hash, or None if unavailable."""
+    try:
+        repo_root = os.path.join(os.path.dirname(__file__), '..')
+        out = subprocess.run(
+            ['git', 'rev-parse', '--short', 'HEAD'],
+            cwd=repo_root, capture_output=True, text=True, timeout=10
+        )
+        if out.returncode == 0:
+            return out.stdout.strip()
+    except Exception:
+        pass
+    return None
 
+
+def joint_epoch_batch_interleaved(trainer, train_loaders, epoch, rng):
+    """
+    One joint epoch: iterate over all tasks at BATCH granularity.
+
+    Each task contributes its batches via a persistent iterator; within an
+    epoch, the task visit order is shuffled (seeded rng). When a task's
+    iterator is exhausted mid-epoch it is skipped for the rest of that epoch
+    (all tasks have equal batch counts in these benchmarks, so this is a
+    no-op in practice).
+
+    Uses the trainer's own compute_loss/before_backward hooks so the training
+    mechanics stay identical to the sequential FineTuning baseline.
+    """
+    n_tasks = len(train_loaders)
+    iters = [iter(loader) for loader in train_loaders]
+    n_batches = max(len(loader) for loader in train_loaders)
+
+    total_loss, correct, total = 0.0, 0, 0
+    trainer.model.train()
+
+    for batch_round in range(n_batches):
+        order = list(range(n_tasks))
+        rng.shuffle(order)  # per-round shuffled task order (kills recency bias)
+        for task_id in order:
+            try:
+                batch = next(iters[task_id])
+            except StopIteration:
+                continue
+            x, y = batch[0], batch[1]
+            x, y = x.to(trainer.device), y.to(trainer.device)
+
+            trainer.optimizer.zero_grad()
+            logits = trainer.model(x, task_id=task_id)
+            loss = trainer.compute_loss(logits, y, task_id, batch_round)
+            loss = trainer.before_backward(loss, task_id, batch_round)
+            loss.backward()
+            trainer.optimizer.step()
+
+            total_loss += loss.item()
+            pred = logits.argmax(dim=1)
+            correct += (pred == y).sum().item()
+            total += y.size(0)
+            trainer.global_step += 1
+
+    return {'loss': total_loss / max(total, 1), 'accuracy': correct / max(total, 1)}
+
+
+def main():
+    """Main joint-training loop (batch-interleaved)."""
+    args = parse_args()
     set_seed(args.seed)
 
     if args.device == 'auto':
@@ -118,17 +190,41 @@ def main():
     else:
         device = torch.device(args.device)
 
+    classes_per_task = {
+        'split_mnist': 10 // args.n_tasks,
+        'split_cifar10': 10 // args.n_tasks,
+        'split_cifar100': 100 // args.n_tasks,
+    }[args.dataset]
+
+    architecture = get_architecture(args.dataset, args.architecture)
+
+    # Canonical config + hash (before any training)
+    config = {
+        'method': 'joint_reference',
+        'dataset': args.dataset,
+        'n_tasks': args.n_tasks,
+        'classes_per_task': classes_per_task,
+        'architecture': architecture,
+        'hidden_size': args.hidden_size if architecture == 'mlp' else None,
+        'epochs': args.epochs,
+        'batch_size': args.batch_size,
+        'lr': args.lr,
+        'momentum': args.momentum,
+        'weight_decay': args.weight_decay,
+        'optimizer': args.optimizer,
+        'seed': args.seed,
+        'schedule': 'batch-interleaved, per-round shuffled task order',
+    }
+    config_hash = hashlib.sha256(
+        json.dumps(config, sort_keys=True).encode('utf-8')
+    ).hexdigest()[:16]
+
     print("=" * 70)
-    print("JOINT TRAINING (UPPER BOUND) - TASK-INCREMENTAL CONTINUAL LEARNING")
+    print("JOINT TRAINING REFERENCE - TASK-INCREMENTAL (batch-interleaved)")
     print("=" * 70)
-    print(f"\nConfiguration:")
-    print(f"  Dataset: {args.dataset}")
-    print(f"  Number of tasks: {args.n_tasks}")
-    print(f"  Device: {device}")
-    print(f"  Random seed: {args.seed}")
-    print(f"  Joint epochs (passes per task): {args.epochs}")
-    print(f"  Batch size: {args.batch_size}")
-    print(f"  Learning rate: {args.lr}")
+    print(f"  Config hash: {config_hash}")
+    for k, v in config.items():
+        print(f"  {k}: {v}")
     print()
 
     # Load dataset
@@ -141,17 +237,7 @@ def main():
         num_workers=args.num_workers,
         validation_split=0.0
     )
-
-    classes_per_task = {
-        'split_mnist': 10 // args.n_tasks,
-        'split_cifar10': 10 // args.n_tasks,
-        'split_cifar100': 100 // args.n_tasks,
-    }[args.dataset]
-
     print(f"Dataset loaded: {args.n_tasks} tasks, {classes_per_task} classes per task")
-
-    architecture = get_architecture(args.dataset, args.architecture)
-    print(f"Using architecture: {architecture}")
 
     model_kwargs = {}
     if architecture == 'mlp':
@@ -175,13 +261,6 @@ def main():
 
     criterion = nn.CrossEntropyLoss()
 
-    # No tensorboard/wandb/checkpoints: keep the run minimal and fast
-    config = {
-        'use_tensorboard': False,
-        'use_wandb': False,
-        'save_checkpoints': False,
-    }
-
     trainer = FineTuningTrainer(
         model=model,
         optimizer=optimizer,
@@ -189,23 +268,20 @@ def main():
         device=device,
         num_tasks=args.n_tasks,
         num_classes_per_task=classes_per_task,
-        config=config
+        config={'use_tensorboard': False, 'use_wandb': False, 'save_checkpoints': False}
     )
 
     print("\n" + "=" * 70)
-    print("STARTING JOINT TRAINING (all tasks simultaneously)")
+    print("STARTING JOINT TRAINING (batch-interleaved, all tasks simultaneously)")
     print("=" * 70)
 
     start_time = time.time()
+    rng = np.random.RandomState(args.seed)
 
-    # Joint epoch = one full pass over EACH task's training data.
-    # This matches the per-task epoch budget of the sequential experiments.
     for epoch in range(args.epochs):
-        epoch_losses = []
-        for task_id in range(args.n_tasks):
-            stats = trainer._train_epoch(task_id, train_loaders[task_id], epoch)
-            epoch_losses.append(stats['loss'])
-        print(f"Joint epoch {epoch + 1}/{args.epochs} - mean task loss: {np.mean(epoch_losses):.4f}")
+        stats = joint_epoch_batch_interleaved(trainer, train_loaders, epoch, rng)
+        print(f"Joint epoch {epoch + 1}/{args.epochs} - "
+              f"loss: {stats['loss']:.4f}, acc: {100 * stats['accuracy']:.2f}%")
 
     train_time = time.time() - start_time
     print(f"\nJoint training completed in {train_time:.1f}s")
@@ -215,56 +291,62 @@ def main():
         task_dataloaders=test_loaders,
         current_task=args.n_tasks - 1
     )
-
     task_accuracies = [accuracies[t] for t in range(args.n_tasks)]
     avg_acc = float(np.mean(task_accuracies))
 
     print("\n" + "=" * 70)
-    print("FINAL RESULTS (JOINT TRAINING UPPER BOUND)")
+    print("FINAL RESULTS (JOINT REFERENCE)")
     print("=" * 70)
     print(f"Average Accuracy: {avg_acc:.4f}")
-    print("Note: forgetting and backward transfer are 0 by construction")
-    print("(tasks are learned simultaneously, not sequentially).")
+    print("Forgetting/BWT: not measured (tasks learned simultaneously)")
 
-    # Save result JSON (same schema as run_all_experiments.py)
+    # Save result JSON — unique run_id, no-overwrite refusal
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
+    run_id = datetime.now().strftime('%Y%m%d_%H%M%S')
+    result_file = output_dir / f"joint_{args.dataset}_seed{args.seed}_{run_id}.json"
+    if result_file.exists():
+        raise FileExistsError(
+            f"Refusing to overwrite existing result: {result_file}"
+        )
+
     result = {
-        'method': 'joint',
+        'method': 'joint_reference',
         'dataset': args.dataset,
         'seed': args.seed,
+        'run_id': run_id,
         'n_tasks': args.n_tasks,
         'epochs': args.epochs,
         'architecture': architecture,
-        'upper_bound': True,
+        'reference_point': True,
         'final_metrics': {
             'average_accuracy': avg_acc,
-            'forgetting': 0.0,          # zero by construction (no sequential learning)
-            'backward_transfer': 0.0    # zero by construction
+            'forgetting': None,           # not measured: tasks learned simultaneously
+            'backward_transfer': None,    # not measured: tasks learned simultaneously
         },
-        'accuracy_matrix': [task_accuracies],
+        'metric_status': {
+            'forgetting': 'not_applicable_joint_training',
+            'backward_transfer': 'not_applicable_joint_training',
+        },
         'task_accuracies': task_accuracies,
+        'accuracy_matrix': [task_accuracies],  # single post-training evaluation row
         'train_time_sec': train_time,
-        'hyperparameters': {
-            'lr': args.lr,
-            'batch_size': args.batch_size,
-            'optimizer': args.optimizer,
-            'momentum': args.momentum,
-            'weight_decay': args.weight_decay,
-        },
-        'note': 'Joint training upper bound: single model trained on all tasks '
-                'simultaneously with per-task head routing. Forgetting/BWT are '
-                'zero by construction, not measured.',
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'config': config,
+        'config_hash': config_hash,
+        'git_commit': get_git_commit(),
+        'note': 'Joint reference: single model trained on all tasks with '
+                'batch-level interleaving (per-round shuffled task order). '
+                'Same trunk/heads/loss as the FineTuning baseline; NOT a '
+                'universal upper bound for Walsh Negotiation (different '
+                'output structure). Forgetting/BWT intentionally null.',
+        'script_version': 'run_joint_training.py v1.1',
     }
 
-    result_file = output_dir / f"joint_{args.dataset}_seed{args.seed}.json"
     with open(result_file, 'w') as f:
         json.dump(result, f, indent=2)
 
     print(f"\nResults saved to {result_file}")
-
     trainer.close()
 
     print("\n" + "=" * 70)
